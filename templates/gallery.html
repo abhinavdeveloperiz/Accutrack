@@ -16,13 +16,13 @@
   <section class="projects-section py-5 mt-4 fade-up">
     <h2 class="text-center mb-4 fade-up" style="font-size: 2.4rem; font-weight: bold; color: #435ac7; margin-bottom: 50px;"><b>GALLERY THAT DEFINES US</b></h2>
     <br />
-    <p class="justify-content-center text-center mx-5 fade-up" style="font-size: 1rem; color: #000000; line-height: 1.6;">Welcome to the Gallery of AccuTrack Technologies, your trusted automation partner in Dubai, UAE. Here, we proudly present a visual journey through our accomplishments over the years...</p>
+    <p class="text-center mx-auto px-3 fade-up" style="max-width: 1000px; font-size: 1rem; color: #000000; line-height: 1.6;">Welcome to the Gallery of AccuTrack Technologies, your trusted automation partner in Dubai, UAE. Here, we proudly present a visual journey through our accomplishments over the years...</p>
     <br />
     <div class="container fade-up">
       <div class="row g-4">
         {% for image in gallery_images %}
         <!-- Gallery Card -->
-        <div class="col-md-3 fade-up">
+        <div class="col-12 col-sm-6 col-lg-3 fade-up">
           <div class="project-card position-relative overflow-hidden">
             <img src="{{ image.image.url }}" class="project-card-img img-fluid" alt="{{ image.title }}" />
             <div class="project-card-overlay d-flex align-items-center justify-content-center">

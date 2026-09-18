@@ -19,7 +19,13 @@ from django.urls import path, include  # Import include to include app URLs
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.views.generic import RedirectView
+
 urlpatterns = [
+    path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'images/favicon.ico', permanent=True)),
+    path('apple-touch-icon.png', RedirectView.as_view(url=settings.STATIC_URL + 'images/apple-touch-icon.png', permanent=True)),
+    path('apple-touch-icon-precomposed.png', RedirectView.as_view(url=settings.STATIC_URL + 'images/apple-touch-icon.png', permanent=True)),
+    path('site.webmanifest', RedirectView.as_view(url=settings.STATIC_URL + 'site.webmanifest', permanent=True)),
     path('admin/', admin.site.urls),
     path('', include('accutrack_app.urls')),  # Include URLs from the 'accutrack_app' app
 ]

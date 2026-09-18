@@ -1,17 +1,17 @@
 
-// Function to detect the scroll event
-window.addEventListener('scroll', function () {
+function checkFadeUp() {
     const elements = document.querySelectorAll('.fade-up');
-
     elements.forEach(function (element) {
-        // Check if the element is in the viewport
         const rect = element.getBoundingClientRect();
-        if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-            // Add the "visible" class to trigger the fade-up animation
+        if (rect.top <= window.innerHeight + 50 && rect.bottom >= -50) {
             element.classList.add('visible');
         }
     });
-});
+}
 
-// Initially trigger the scroll event to check if elements are already visible
-window.dispatchEvent(new Event('scroll'));
+window.addEventListener('scroll', checkFadeUp, { passive: true });
+window.addEventListener('resize', checkFadeUp, { passive: true });
+document.addEventListener('DOMContentLoaded', checkFadeUp);
+setTimeout(checkFadeUp, 100);
+setTimeout(checkFadeUp, 500);
+
