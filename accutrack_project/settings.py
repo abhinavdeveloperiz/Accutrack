@@ -21,12 +21,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wxqyd4@_(k1h8mc69a5%rff6%l0g2=f@4f5f!rq%-8r0!_0@q2'
+SECRET_KEY = os.getenv(
+    'SECRET_KEY',
+    'django-insecure-wxqyd4@_(k1h8mc69a5%rff6%l0g2=f@4f5f!rq%-8r0!_0@q2'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
+render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+extra_csrf = os.getenv('CSRF_TRUSTED_ORIGINS')
+if extra_csrf:
+    CSRF_TRUSTED_ORIGINS.extend([origin.strip() for origin in extra_csrf.split(',') if origin.strip()])
+
+# Production security configurations behind Render proxy
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 # Application definition
@@ -84,6 +105,18 @@ DATABASES = {
     }
 }
 
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    try:
+        import dj_database_url
+        DATABASES['default'] = dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    except ImportError:
+        pass
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -116,12 +149,20 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 # Media files settings
 MEDIA_URL = '/media/'

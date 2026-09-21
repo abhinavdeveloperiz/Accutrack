@@ -58,7 +58,7 @@ Contact | ACCUTRACK
 
       <div class="col-lg-8">
         <div class="contact-card p-4 rounded bg-light shadow-sm">
-          <form action="https://wa.me/{{ contact_info.clean_whatsapp|default:'971543337493' }}" method="get" class="custom-form" target="_blank">
+          <form id="whatsappContactForm" action="https://wa.me/{{ contact_info.clean_whatsapp|default:'971543337493' }}" method="get" class="custom-form" target="_blank">
             <div class="mb-3">
               <input type="text" class="form-control custom-input" id="name" name="name" placeholder="Enter your name"
                 required />
@@ -86,4 +86,22 @@ Contact | ACCUTRACK
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('whatsappContactForm');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const whatsappNumber = "{{ contact_info.clean_whatsapp|default:'971543337493' }}";
+      
+      const fullText = `Hello Accutrack,\n\nName: ${name}\nEmail: ${email}\nMessage: ${message}`;
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullText)}`;
+      window.open(url, '_blank');
+    });
+  });
+</script>
 {% endblock %}
